@@ -1,6 +1,5 @@
 from aiogram.types import Message
 from aiogram import Bot, Dispatcher, F
-import asyncio
 from config import TOKEN_BOT
 from updateDB import add_channel, remove_channel, delete_all_channel_from_user
 
@@ -29,7 +28,7 @@ async def add(message: Message):
                 valid_list_channel.append(channel)
             elif channel[0:13] == "https://t.me/":
                 await add_channel("@"+channel[13:], message)
-                valid_list_channel.append(channel)
+                valid_list_channel.append("@"+channel[13:])
             else:
                 invalid_list_channel.append(channel)
         valid = ''
@@ -39,9 +38,9 @@ async def add(message: Message):
         if len(invalid_list_channel)>0:
             invalid = ' '.join(e for e in invalid_list_channel)
         if len(valid)>0:
-            await bot.send_message(message.from_user.id, f"Вы успешно отслеживаете каналы: {valid}")
+            await bot.send_message(message.from_user.id, f"Вы успешно отслеживаете каналы:\n{valid}")
         if len(invalid)>0:
-            await bot.send_message(message.from_user.id, f"Не смог найти каналы: {invalid}")
+            await bot.send_message(message.from_user.id, f"Не смог найти каналы:\n{invalid}")
                 
 
 @dp.message(F.text.startswith("/remove"))
@@ -59,7 +58,7 @@ async def remove(message: Message):
                 valid_list_channel.append(channel)
             elif channel[0:13] == "https://t.me/":
                 await remove_channel("@"+channel[13:], message)
-                valid_list_channel.append(channel)
+                valid_list_channel.append("@"+channel[13:])
             else:
                 invalid_list_channel.append(channel)
         valid = ''
@@ -69,9 +68,9 @@ async def remove(message: Message):
         if len(invalid_list_channel)>0:
             invalid = ' '.join(e for e in invalid_list_channel)
         if len(valid)>0:
-            await bot.send_message(message.from_user.id, f"Вы успешно отказались от подписки на каналы: {valid}")
+            await bot.send_message(message.from_user.id, f"Вы успешно отказались от подписки на каналы:\n{valid}")
         if len(invalid)>0:
-            await bot.send_message(message.from_user.id, f"Не смог найти каналы: {invalid}")
+            await bot.send_message(message.from_user.id, f"Не смог найти каналы:\n{invalid}")
     
 
 @dp.message(F.text.startswith("/delete"))
@@ -80,10 +79,6 @@ async def delete(message: Message):
     await bot.send_message(message.from_user.id, "Все подписки успешно удалены")
 
 
-async def main():
+async def bot_polling():
     await dp.start_polling(bot)
-
-
-if __name__ == '__main__':
-    asyncio.run(main())
 
