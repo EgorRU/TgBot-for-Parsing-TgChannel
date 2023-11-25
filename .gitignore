@@ -1,3 +1,5 @@
 config.py
 database.db
 __pycache__/
+me.session-journal
+me.session
